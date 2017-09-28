@@ -1,0 +1,57 @@
+---
+title: "Faye’s Week 4 Homework"
+author: "Faye Harwell"
+date: "September 27, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Homework for Week 4- Let's do some countin' of some Titi Monkeys
+
+### So, we have an expected occurence of 8 monkey sightings (jk hearings) from 5am to 7am... primatologists may or may not be masochistic doing work at 5am when the sun rises...  
+ 
+### Regardless, that means that λ is equal to 8
+ 
+
+
+### Question 1: What is the probability that she will hear more than 8 calls during any given session?
+
+```{r}
+1-ppois(q=8,lambda = 8)
+```
+
+### Answer: 0.407452658562409
+
+### Question 2: What is the probability that she will hear no calls in a session?
+
+```{r}
+ppois(q=0, lambda = 8)
+```
+
+### Question 3: What is the probability that she will hear exactly 3 calls in a session?
+```{r}
+ppois(q=3, lambda = 8)
+```
+
+### Question 4: Plot the relevant Poisson mass function over the values in range 0 ≤ xx ≤ 30
+
+### Answer: See Plot Below
+
+```{r}
+x <- 0:30
+l = 8
+probset <- dpois(x = x, lambda = l)
+barplot(probset, names.arg = x, space = 0, xlab = "x", ylab = "Pr(X = x)", main = "Probability Mass Function")
+```
+
+### Question 5: Simulate 104 results from this distribution (i.e., 2 years of Saturday monitoring sessions).
+
+```{r}
+probset <- rpois(104, lambda = 8)
+hist(probset, xlab = "Number of Calls", ylab = "Frequency of Call Amounts", xlim= c(0,30), main = "Histogram of Daily Call Counts")
+
+probset
+```
