@@ -1,0 +1,352 @@
+---
+title: "Faye Harwell- Zombie Apocolapse Homework"
+author: "Faye Harwell"
+date: "September 28, 2017"
+output: html_document
+---
+
+
+# ZOMBIE Homework... we got some killin' to do!
+
+### To get started, load your badass dataset: 
+
+```{r}
+library(curl)
+f <- f <- curl("https://raw.githubusercontent.com/fuzzyatelin/fuzzyatelin.github.io/master/AN597_Fall17/zombies.csv")
+d <- read.csv(f, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+head(d)
+d
+```
+
+
+### Question 1: Calculate dem means... what doooo you mean? 
+```{r}
+mean(d$height)->avg_height
+avg_height
+```
+    
+```{r}
+mean(d$weight)->avg_weight
+avg_weight
+```
+```{r}
+mean(d$zombies_killed)->avg_zombieskilled
+avg_zombieskilled
+```
+
+```{r}
+mean(d$years_of_education)->avg_years_of_education
+avg_years_of_education
+```
+
+```{r}
+population_size <-length(d$id)
+population_size
+```
+
+### The fun part is computing variance by hand... everyone enjoys that..
+
+```{r}
+var_height<-(sum((d$height-avg_height)^2)/(1000))
+var_height
+```
+
+```{r}
+var_weight<-(sum((d$weight-avg_weight)^2)/(1000))
+var_weight
+```
+
+```{r}
+var_zombieskilled<-(sum((d$zombies_killed-avg_zombieskilled)^2)/(1000))
+var_zombieskilled
+```
+
+```{r}
+var_years_of_education<-(sum((d$years_of_education-avg_years_of_education)^2)/(1000))
+var_years_of_education
+```
+
+### Let's pull it all together... actually we are going to squareroot the sh*t out of this stuff
+
+```{r}
+sd_height <- sqrt(var_height)
+sd_height
+```
+
+```{r}
+sd_weight <- sqrt(var_weight)
+sd_weight
+```
+
+```{r}
+sd_zombieskilled <- sqrt(var_zombieskilled)
+sd_zombieskilled
+```
+
+```{r}
+sd_years_of_education <- sqrt(var_years_of_education)
+sd_years_of_education
+```
+
+## Question 2: G-G Plotting... any thing to do with G-G rubbing.. Hopefully, not...
+
+### Boxing a plot of males and females for Height
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+ggplot(aes(y = height, x = gender), data = d) + ylab("Height (inches)") + xlab("Gender") +geom_boxplot(fill= "turquoise")->boxplot_height
+boxplot_height
+```
+
+```{r}
+ggplot(aes(y = weight, x = gender), data = d) +ylab("Weight (Pounds)") + xlab("Gender") + geom_boxplot(fill= "mediumorchid")->boxplot_weight
+boxplot_weight
+```
+
+```{r}
+ggplot(aes(y = zombies_killed, x = gender), data = d) + ylab("Number of Zombies Killed") + xlab("Gender") + geom_boxplot(fill= "limegreen")->boxplot_zombieskilled
+boxplot_zombieskilled
+```
+
+```{r}
+ggplot(aes(y = years_of_education, x = gender), data = d) + ylab("Number of Years of Education") + xlab("Gender") + geom_boxplot(fill= "cornflowerblue")->boxplot_education
+boxplot_education
+```
+
+## Question 3: More G-G rubbing... I mean plotting. This time around do some scattering of the plot (aka a scatterplot!)
+
+#### Both scatterplots show a positive relationship/correlation (although I have not gone ahead and tested whether it is significant). This means that as you get older, you are likely to be heavier and taller... I like when data is straight forward and makes sense!
+```{r}
+ggplot(d, aes(age, weight)) + xlab("Age (years)") + ylab("Weight (pounds)")+
+  geom_point(shape = 16, size = 1, show.legend = FALSE, colour = ("deeppink1")) + theme_classic()
+```
+
+## Question 4: Being normal is vastly overrated.... you could be anything... Poison, Bernoulli, Beta, and the list goes on and on! Anyways, go ahead and check for normality using Q-Q Plots and histograms
+
+```{r}
+ggplot(d, aes(age, height)) + xlab("Age (years)") + ylab("Height (inches)")+
+  geom_point(shape = 16, size = 1, show.legend = FALSE, colour = ("mediumspringgreen")) + theme_classic()
+```
+
+```{r}
+qqnorm(d$height, cex=0.5, main="QQ Plot for Height")
+qqline(d$height, col="pink")
+hist(d$height, main="Height of Apocolapse Survivors", xlab="Height (inches)", ylab="Frequency", col="lightblue")
+```
+### In my expert opinion, height is looking pretty darn normal. In the Q-Q plot, you see a very nice straight line plotted for sample quantiles plotted against theoretical quantiles. Likewise, the histogram of the frequency of heights is bell-shaped. 
+
+```{r}
+qqnorm(d$weight, cex=0.5, main="QQ Plot for Weight")
+qqline(d$weight, col="lightblue")
+hist(d$weight, main="Weight of Apocolapse Survivors", xlab="Weight (inches)", ylab="Frequency", col="pink")
+```
+
+### Again, very normal looking. Both in the histogram and the Q-Q plot you see the points being normally distributed (i.e. straight line for sample quantiles plotted against theoretical quantiles and nice bell-shaped curve)
+
+```{r}
+qqnorm(d$zombies_killed, cex=0.5, main="QQ Plot for Number of Zombies Killed")
+qqline(d$zombies_killed, col="pink")
+hist(d$zombies_killed, main="Number of Zombies Killed by Survivors", xlab="Number of Zombies Killed", ylab="Frequency", col="lightblue")
+```
+
+### Both the Q-Q plot and the histogram showing the number of zombies killed by survivors do not follow a normal distribution. The histogram shows a right skew distribution. I predict that this may be a poisson distribution as it is highly skewed. 
+
+```{r}
+qqnorm(d$years_of_education, cex=0.5, main="QQ Plot for Years of Education")
+qqline(d$years_of_education, col="orange")
+hist(d$years_of_education, main="Education of Apocolapse Survivors", xlab="Number of Years of Education", ylab="Frequency", col="purple")
+```
+
+### Both the Q-Q plot and the histogram showing the number of years of education of survivors do not follow a normal distribution. The histogram shows a right skew distribution. I predict that this may be a poisson distribution as it is highly skewed. 
+
+## Question 5: Random Sampling!
+
+```{r}
+library(dplyr)
+sample(d$id, size= 30, replace = FALSE, prob = NULL)-> random_rows
+d %>% slice(random_rows)-> random30
+```
+
+```{r}
+library(dplyr)
+d[sample(nrow(d),30),]
+```
+
+```{r}
+random30
+```
+
+### NOW, instead of doing these god forsaken equations again... copy from above Question 1's work (Standard Deviation & Mean done out by hand)
+
+```{r}
+mean(random30$height)->avg_height30
+avg_height30
+```
+    
+```{r}
+mean(random30$weight)->avg_weight30
+avg_weight30
+```
+
+```{r}
+mean(random30$zombies_killed)->avg_zombieskilled30
+avg_zombieskilled30
+```
+
+```{r}
+mean(random30$years_of_education)->avg_years_of_education30
+avg_years_of_education30
+```
+
+
+### COPIED: The fun part is computing variance by hand... everyone enjoys that..
+
+```{r}
+var_height30<-(sum((random30$height-avg_height30)^2)/(30))
+var_height30
+```
+
+```{r}
+var_weight30<-(sum((random30$weight-avg_weight30)^2)/(30))
+var_weight30
+```
+
+```{r}
+var_zombieskilled30<-(sum((random30$zombies_killed-avg_zombieskilled30)^2)/(30))
+var_zombieskilled30
+```
+
+```{r}
+var_years_of_education30<-(sum((random30$years_of_education-avg_years_of_education30)^2)/(30))
+var_years_of_education30
+```
+
+### COPIED: Let's pull it all together... actually we are going to squareroot the sh*t out of this stuff
+
+```{r}
+sd_height30 <- sqrt(var_height30)
+sd_height30
+```
+
+```{r}
+sd_weight30 <- sqrt(var_weight30)
+sd_weight30
+```
+
+```{r}
+sd_zombieskilled30 <- sqrt(var_zombieskilled30)
+sd_zombieskilled30
+```
+
+```{r}
+sd_years_of_education30 <- sqrt(var_years_of_education30)
+sd_years_of_education30
+```
+
+### Even better, you get to do standard error calculations... aren't you a lucky ducky
+
+```{r}
+se_height30<-sd_height30/sqrt(30)
+se_height30
+```
+```{r}
+se_weight30<-sd_weight30/sqrt(30)
+se_weight30
+```
+```{r}
+se_zombieskilled30<-sd_zombieskilled30/sqrt(30)
+se_zombieskilled30
+```
+
+```{r}
+se_years_of_education30<-sd_years_of_education30/sqrt(30)
+se_years_of_education30
+```
+
+### Lucky Ducky, I got more news for you- you get to do confidence intervals.
+
+```{r}
+c(avg_height30-2*se_height30, avg_height30+2*se_height30)
+```
+```{r}
+c(avg_weight30-2*se_weight30, avg_weight30+2*se_weight30)
+```
+```{r}
+c(avg_zombieskilled30+1.96*(avg_zombieskilled30/30), avg_zombieskilled30-1.96*(avg_zombieskilled30/30))
+```
+
+```{r}
+c(avg_years_of_education30+1.96*(avg_years_of_education30/30), avg_years_of_education30-1.96*(avg_years_of_education30/30))
+```
+
+## Question 5: Random sampling... again... 99 more times to be precise...
+
+### Hmmm maybe replicate () will be helpful... or not. 
+
+```{r}
+replicated_99 <- replicate(99,d[sample(nrow(d),30),])
+replicated_99
+```
+### Faye, remember that you have terrible naming abilities and you named your 'height' variables hah and haha
+
+```{r}
+replicated_99[5,]-> heights99
+for (i in 1:99){
+  hah[i] <- mean(heights99[[i]])
+}
+hah
+```
+
+```{r}
+mean(hah)-> haha
+haha
+hist(hah, col="magenta", xlab= "Height", main= NULL)
+```
+
+### Do better names this time round (good thing you do this like 4 more times)
+
+### This is for Weight
+```{r}
+replicated_99[6,]-> weights99
+for (i in 1:99){
+  lala[i] <- mean(weights99[[i]])
+}
+lala
+```
+
+```{r}
+mean(lala)-> lalala
+lalala
+hist(lala, col="blue", xlab= "Weight", main= NULL)
+```
+
+### This is for Number of Zombies Killed
+```{r}
+replicated_99[7,]-> zombieskilled99
+hehe <- 0
+for (i in 1:99){
+  hehe[i] <- mean(zombieskilled99[[i]])
+}
+hehe
+mean(hehe)-> hehehe
+hehehe
+hist(hehe,col="lightgreen", main=NULL, xlab= "Number of Zombies Killed")
+```
+
+### This is for Number of Years of Education
+
+### This is for Number of Zombies Killed
+```{r}
+replicated_99[8,]-> yearsofeducation99
+dumdum <- 0
+for (i in 1:99){
+  dumdum[i] <- mean(yearsofeducation99[[i]])
+}
+dumdum
+mean(dumdum)-> dumdumdum
+dumdumdum
+hist(dumdum, col="lightblue", xlab= "Years of Education", main= NULL)
+```
